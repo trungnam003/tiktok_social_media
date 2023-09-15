@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Presentation", "src\Tiktok.API.Presentation\Tiktok.API.Presentation.csproj", "{733A54DA-2C7B-4937-A46E-B3456684F210}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Domain", "src\Tiktok.API.Domain\Tiktok.API.Domain.csproj", "{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Infrastructure", "src\Tiktok.API.Infrastructure\Tiktok.API.Infrastructure.csproj", "{EBFE0566-5AAE-477B-846D-CDD918516C9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Application", "src\Tiktok.API.Application\Tiktok.API.Application.csproj", "{7C577776-17A8-4654-BDA4-16F0E1760982}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEA4380D-90B8-4964-A37B-7CD373C43202}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{B11EF9EA-3609-44CA-BDD8-B719F0EE930F}"
+	ProjectSection(SolutionItems) = preProject
+		src\docker-compose.override.yml = src\docker-compose.override.yml
+		src\docker-compose.yml = src\docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{733A54DA-2C7B-4937-A46E-B3456684F210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{733A54DA-2C7B-4937-A46E-B3456684F210}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{733A54DA-2C7B-4937-A46E-B3456684F210}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{733A54DA-2C7B-4937-A46E-B3456684F210}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C577776-17A8-4654-BDA4-16F0E1760982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C577776-17A8-4654-BDA4-16F0E1760982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C577776-17A8-4654-BDA4-16F0E1760982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C577776-17A8-4654-BDA4-16F0E1760982}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B11EF9EA-3609-44CA-BDD8-B719F0EE930F} = {EEA4380D-90B8-4964-A37B-7CD373C43202}
+	EndGlobalSection
+EndGlobal
