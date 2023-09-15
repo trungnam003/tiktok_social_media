@@ -1,25 +1,35 @@
+using Serilog;
+using Tiktok.API.Presentation.Extensions;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
+Log.Information("Starting up");
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    builder.Host.AddConfigurationsJson();
+    builder.Host.AddSerilog();
+    
+    var app = builder.ConfigureServices()
+        .ConfigurePipeline();
+    
+    app.Run();
 }
+catch (Exception ex)
+{
+    string type = ex.GetType().Name;
 
-app.UseHttpsRedirection();
+    if (type == "StopTheHostException")
+        throw;
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+    Log.Fatal($"Project terminated unexpectedly {ex}");
+}
+finally
+{
+    Log.Fatal($"Stopping - {builder.Environment.ApplicationName}");
+    Log.CloseAndFlush();
+}
