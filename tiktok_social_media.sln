@@ -1,24 +1,36 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Presentation", "src\Tiktok.API.Presentation\Tiktok.API.Presentation.csproj", "{733A54DA-2C7B-4937-A46E-B3456684F210}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Domain", "src\Tiktok.API.Domain\Tiktok.API.Domain.csproj", "{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Infrastructure", "src\Tiktok.API.Infrastructure\Tiktok.API.Infrastructure.csproj", "{EBFE0566-5AAE-477B-846D-CDD918516C9A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Application", "src\Tiktok.API.Application\Tiktok.API.Application.csproj", "{7C577776-17A8-4654-BDA4-16F0E1760982}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEA4380D-90B8-4964-A37B-7CD373C43202}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{B11EF9EA-3609-44CA-BDD8-B719F0EE930F}"
-	ProjectSection(SolutionItems) = preProject
-		src\docker-compose.override.yml = src\docker-compose.override.yml
+		src\.env = src\.env
 		src\docker-compose.yml = src\docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{EC046C80-76A3-4714-8D39-8BF985D42308}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{6E39806E-EFED-4273-A670-B163585C0C70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tiktok.API", "Tiktok.API", "{9C9A8321-F457-4350-BD31-277CAD256551}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScheduledJob", "ScheduledJob", "{F255FDC2-6C8E-440B-BD2F-4B42F528D274}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Application", "src\Tiktok.API\Tiktok.API.Application\Tiktok.API.Application.csproj", "{5EEA32D5-5DB9-432A-AB66-80A6AC46B1A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Domain", "src\Tiktok.API\Tiktok.API.Domain\Tiktok.API.Domain.csproj", "{F23D2D2D-AB55-4888-BDDF-0AEA58D35514}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Infrastructure", "src\Tiktok.API\Tiktok.API.Infrastructure\Tiktok.API.Infrastructure.csproj", "{8EF061A3-C147-439D-9947-857885D0C1B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.API.Presentation", "src\Tiktok.API\Tiktok.API.Presentation\Tiktok.API.Presentation.csproj", "{3878819C-09C0-48E3-B179-C4E9B96FA2FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "src\BuildingBlocks\Contracts\Contracts.csproj", "{FC12564B-194A-438B-A927-F7B01499AFBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\BuildingBlocks\Infrastructure\Infrastructure.csproj", "{E8B097F2-DE33-48CA-ADA0-2844F6D20B47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\BuildingBlocks\Shared\Shared.csproj", "{F1E4C354-54BC-45C6-8FEE-37A15268A77C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiktok.ScheduledJob", "src\ScheduledJob\Tiktok.ScheduledJob\Tiktok.ScheduledJob.csproj", "{A1B75032-27BC-48BD-8477-CD9E2787CCCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,24 +38,50 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{733A54DA-2C7B-4937-A46E-B3456684F210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{733A54DA-2C7B-4937-A46E-B3456684F210}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{733A54DA-2C7B-4937-A46E-B3456684F210}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{733A54DA-2C7B-4937-A46E-B3456684F210}.Release|Any CPU.Build.0 = Release|Any CPU
-		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{956DFE3E-2C87-465A-B7B1-9A11EF69B0A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBFE0566-5AAE-477B-846D-CDD918516C9A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C577776-17A8-4654-BDA4-16F0E1760982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C577776-17A8-4654-BDA4-16F0E1760982}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C577776-17A8-4654-BDA4-16F0E1760982}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C577776-17A8-4654-BDA4-16F0E1760982}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EEA32D5-5DB9-432A-AB66-80A6AC46B1A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EEA32D5-5DB9-432A-AB66-80A6AC46B1A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EEA32D5-5DB9-432A-AB66-80A6AC46B1A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EEA32D5-5DB9-432A-AB66-80A6AC46B1A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F23D2D2D-AB55-4888-BDDF-0AEA58D35514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F23D2D2D-AB55-4888-BDDF-0AEA58D35514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F23D2D2D-AB55-4888-BDDF-0AEA58D35514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F23D2D2D-AB55-4888-BDDF-0AEA58D35514}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EF061A3-C147-439D-9947-857885D0C1B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EF061A3-C147-439D-9947-857885D0C1B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EF061A3-C147-439D-9947-857885D0C1B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EF061A3-C147-439D-9947-857885D0C1B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3878819C-09C0-48E3-B179-C4E9B96FA2FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3878819C-09C0-48E3-B179-C4E9B96FA2FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3878819C-09C0-48E3-B179-C4E9B96FA2FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3878819C-09C0-48E3-B179-C4E9B96FA2FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC12564B-194A-438B-A927-F7B01499AFBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC12564B-194A-438B-A927-F7B01499AFBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC12564B-194A-438B-A927-F7B01499AFBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC12564B-194A-438B-A927-F7B01499AFBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8B097F2-DE33-48CA-ADA0-2844F6D20B47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8B097F2-DE33-48CA-ADA0-2844F6D20B47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8B097F2-DE33-48CA-ADA0-2844F6D20B47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8B097F2-DE33-48CA-ADA0-2844F6D20B47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1E4C354-54BC-45C6-8FEE-37A15268A77C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1E4C354-54BC-45C6-8FEE-37A15268A77C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1E4C354-54BC-45C6-8FEE-37A15268A77C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1E4C354-54BC-45C6-8FEE-37A15268A77C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B75032-27BC-48BD-8477-CD9E2787CCCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B75032-27BC-48BD-8477-CD9E2787CCCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B75032-27BC-48BD-8477-CD9E2787CCCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B75032-27BC-48BD-8477-CD9E2787CCCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B11EF9EA-3609-44CA-BDD8-B719F0EE930F} = {EEA4380D-90B8-4964-A37B-7CD373C43202}
+		{6E39806E-EFED-4273-A670-B163585C0C70} = {EC046C80-76A3-4714-8D39-8BF985D42308}
+		{9C9A8321-F457-4350-BD31-277CAD256551} = {EC046C80-76A3-4714-8D39-8BF985D42308}
+		{F255FDC2-6C8E-440B-BD2F-4B42F528D274} = {EC046C80-76A3-4714-8D39-8BF985D42308}
+		{5EEA32D5-5DB9-432A-AB66-80A6AC46B1A9} = {9C9A8321-F457-4350-BD31-277CAD256551}
+		{F23D2D2D-AB55-4888-BDDF-0AEA58D35514} = {9C9A8321-F457-4350-BD31-277CAD256551}
+		{8EF061A3-C147-439D-9947-857885D0C1B1} = {9C9A8321-F457-4350-BD31-277CAD256551}
+		{3878819C-09C0-48E3-B179-C4E9B96FA2FF} = {9C9A8321-F457-4350-BD31-277CAD256551}
+		{FC12564B-194A-438B-A927-F7B01499AFBB} = {6E39806E-EFED-4273-A670-B163585C0C70}
+		{E8B097F2-DE33-48CA-ADA0-2844F6D20B47} = {6E39806E-EFED-4273-A670-B163585C0C70}
+		{F1E4C354-54BC-45C6-8FEE-37A15268A77C} = {6E39806E-EFED-4273-A670-B163585C0C70}
+		{A1B75032-27BC-48BD-8477-CD9E2787CCCE} = {F255FDC2-6C8E-440B-BD2F-4B42F528D274}
 	EndGlobalSection
 EndGlobal
