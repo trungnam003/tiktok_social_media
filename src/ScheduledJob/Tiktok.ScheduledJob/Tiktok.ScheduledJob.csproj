@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.5" />
+        <PackageReference Include="Hangfire.Console" Version="1.4.2" />
+        <PackageReference Include="Hangfire.Console.Extensions" Version="1.0.5" />
+        <PackageReference Include="Hangfire.Core" Version="1.8.5" />
+        <PackageReference Include="Hangfire.Mongo" Version="1.9.9" />
+        <PackageReference Include="Hangfire.NetCore" Version="1.8.5" />
+        <PackageReference Include="MailKit" Version="4.2.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Tiktok.API\Tiktok.API.Domain\Tiktok.API.Domain.csproj" />
+      <ProjectReference Include="..\..\Tiktok.API\Tiktok.API.Infrastructure\Tiktok.API.Infrastructure.csproj" />
+    </ItemGroup>
+
+
+</Project>
