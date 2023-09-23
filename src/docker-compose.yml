@@ -35,7 +35,63 @@ services:
       - tiktok_redis_data:/data
     command: /bin/sh -c "redis-server --requirepass ${DB_PASSWORD}"
     
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
 
+  tiktok_api:
+    image: ${DOCKER_REGISTRY-}tiktok-api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Tiktok.API/Tiktok.API.Presentation/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - "DatabaseSettings:ConnectionString=Server=tiktok_mssql_db;Database=Tiktok;User Id=sa;Password=${DB_PASSWORD};MultipleActiveResultSets=True;TrustServerCertificate=true"
+      - "EventBusSettings:HostAddress=amqp://admin:Trungnam.123@rabbitmq:5672"
+      - "RedisSettings:ConnectionString=tiktok_redis:6379,password=${DB_PASSWORD}"
+      - "DiskStorageSettings:StoragePath=/home/tiktok/storage"
+    restart: always
+    depends_on: 
+        - tiktok_mssql_db
+        - tiktok_mongo_db
+        - tiktok_redis
+        - rabbitmq
+    ports:
+        - "8888:80"
+    volumes:
+      - "B:\\Workspace\\project\\tiktok_social_media\\deploy_docker_local\\storage:/home/tiktok/storage"
+  
+  tiktok_bg_worker:
+    image: ${DOCKER_REGISTRY-}tiktok-bg-worker:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: ScheduledJob/Tiktok.ScheduledJob/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - "DatabaseSettings:ConnectionString=Server=tiktok_mssql_db;Database=Tiktok;User Id=sa;Password=${DB_PASSWORD};MultipleActiveResultSets=True;TrustServerCertificate=true"
+      - "EventBusSettings:HostAddress=amqp://admin:Trungnam.123@rabbitmq:5672"
+      - "DiskStorageSettings:StoragePath=/home/tiktok/storage"
+      - "HangfireSettings:Storage:ConnectionString=mongodb://root:Trungnam.123@tiktok_mongo_db/hangfire-webapi?authSource=admin"
+    depends_on:
+        - tiktok_mssql_db
+        - tiktok_mongo_db
+        - tiktok_redis
+        - rabbitmq
+    restart: always
+    ports:
+      - "9999:80"
+    volumes:
+      - "B:\\Workspace\\project\\tiktok_social_media\\deploy_docker_local\\storage:/home/tiktok/storage"
+    
 networks:
   default:
     name: tiktok_network

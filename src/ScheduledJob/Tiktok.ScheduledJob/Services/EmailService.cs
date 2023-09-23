@@ -11,24 +11,22 @@ public class EmailService : IEmailService<MailRequest>
 {
     private readonly ILogger _logger;
     private readonly EmailSettings _emailSettings;
-    private readonly SmtpClient _smtpClient;
-
-    public EmailService(ILogger logger, EmailSettings emailSettings, SmtpClient smtpClient)
+    public EmailService(ILogger logger, EmailSettings emailSettings)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _emailSettings = emailSettings ?? throw new ArgumentNullException(nameof(emailSettings));
-        _smtpClient = smtpClient ?? throw new ArgumentNullException(nameof(smtpClient));
     }
 
     public async Task SendEmailAsync(MailRequest request, CancellationToken cancellationToken = default)
     {
         var mimeMessage = GetMimeMessage(request);
+        using var smtpClient = new SmtpClient();
         try
         {
             _logger.Information($"Send email to {request.To}");
-            await _smtpClient.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.Port, _emailSettings.UseSsl, cancellationToken);
-            await _smtpClient.AuthenticateAsync(_emailSettings.Username, _emailSettings.Password, cancellationToken);
-            await _smtpClient.SendAsync(mimeMessage, cancellationToken);
+            await smtpClient.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.Port, _emailSettings.UseSsl, cancellationToken);
+            await smtpClient.AuthenticateAsync(_emailSettings.Username, _emailSettings.Password, cancellationToken);
+            await smtpClient.SendAsync(mimeMessage, cancellationToken);
             _logger.Information($"Send email success to {request.To}");
 
         }
@@ -38,20 +36,21 @@ public class EmailService : IEmailService<MailRequest>
         }
         finally
         {
-            await _smtpClient.DisconnectAsync(true, cancellationToken);
-            _smtpClient.Dispose();
+            await smtpClient.DisconnectAsync(true, cancellationToken);
+            smtpClient.Dispose();
         }
     }
 
     public void SendEmail(MailRequest request)
     {
         var emailMessage = GetMimeMessage(request);
+        using var smtpClient = new SmtpClient();
 
         try
         {
-            _smtpClient.Connect(_emailSettings.SmtpServer, _emailSettings.Port, _emailSettings.UseSsl);
-            _smtpClient.Authenticate(_emailSettings.Username, _emailSettings.Password);
-            _smtpClient.Send(emailMessage);
+            smtpClient.Connect(_emailSettings.SmtpServer, _emailSettings.Port, _emailSettings.UseSsl);
+            smtpClient.Authenticate(_emailSettings.Username, _emailSettings.Password);
+            smtpClient.Send(emailMessage);
         }
         catch (Exception ex)
         {
@@ -59,8 +58,8 @@ public class EmailService : IEmailService<MailRequest>
         }
         finally
         {
-            _smtpClient.Disconnect(true);
-            _smtpClient.Dispose();
+            smtpClient.Disconnect(true);
+            smtpClient.Dispose();
         }
     }
 

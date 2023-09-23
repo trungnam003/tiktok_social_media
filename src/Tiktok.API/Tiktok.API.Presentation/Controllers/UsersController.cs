@@ -1,9 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tiktok.API.Application.Common.DTOs.Users;
+using Tiktok.API.Application.Features.Users.Commands.Register;
 using Tiktok.API.Application.Features.Users.Queries.Login;
-using Tiktok.API.Infrastructure;
-using Tiktok.API.Infrastructure.Validators;
+
 
 namespace Tiktok.API.Presentation.Controllers;
 
@@ -22,7 +22,42 @@ public class UsersController : ControllerBase
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginQuery login)
     {
-        var result =await _mediator.Send(login);
+        var result = await _mediator.Send(login);
         return Ok(result);
+    }
+
+    [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterUserCommand model)
+    {
+        var result = await _mediator.Send(model);
+        return Ok(result);
+    }
+
+    [HttpGet("profile")]
+    [Authorize]
+    public IActionResult GetProfile()
+    {
+        return this.Ok(new { message = "API is under development" });
+    }
+
+    [HttpPost("forgot-password")]
+    public IActionResult ForgotPassword()
+    {
+        return this.Ok(new { message = "API is under development" });
+    }
+
+    [HttpPatch("change-password")]
+    [Authorize]
+    public IActionResult ChangePassword()
+    {
+        return this.Ok(new { message = "API is under development" });
+    }
+
+    [HttpPatch("update-profile")]
+    [Authorize]
+    public IActionResult UpdateProfile()
+    {
+        return this.Ok(new { message = "API is under development" });
     }
 }

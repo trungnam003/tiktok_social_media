@@ -14,6 +14,7 @@ try
     builder.Host.AddSerilog();
     
     builder.Services.AddHangfireService(builder.Configuration);
+    builder.Services.ConfigureServices(builder.Configuration);
 
     var app = builder.Build();
 

@@ -1,5 +1,4 @@
 ﻿using Contracts.Domains.Interfaces;
-using Tiktok.API.Domain.Repositories;
 
 namespace Contracts.Repositories;
 
