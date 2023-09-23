@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Tiktok.API.Application.Common.DTOs.Users;
 using Tiktok.API.Domain.Common.Models;
+
 #nullable disable
 namespace Tiktok.API.Application.Features.Users.Queries.Login;
 

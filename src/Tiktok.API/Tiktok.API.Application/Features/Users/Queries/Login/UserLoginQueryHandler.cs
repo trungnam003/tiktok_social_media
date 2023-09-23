@@ -21,7 +21,8 @@ public class UserLoginQueryHandler : IRequestHandler<UserLoginQuery, ApiSuccessR
         _jwtService = jwtService;
     }
 
-    public async Task<ApiSuccessResult<LoginResultDto>> Handle(UserLoginQuery request, CancellationToken cancellationToken)
+    public async Task<ApiSuccessResult<LoginResultDto>> Handle(UserLoginQuery request,
+        CancellationToken cancellationToken)
     {
         try
         {

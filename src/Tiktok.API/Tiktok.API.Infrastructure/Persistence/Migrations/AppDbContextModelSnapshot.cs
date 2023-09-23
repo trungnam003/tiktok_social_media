@@ -152,6 +152,38 @@ namespace Tiktok.API.Infrastructure.Persistence.Migrations
                     b.ToTable("UserTokens", "Identity");
                 });
 
+            modelBuilder.Entity("Tiktok.API.Domain.Entities.Audio", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("ModifiedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("MsDuration")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SourceId")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<long>("TotalUsed")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SourceId")
+                        .IsUnique();
+
+                    b.ToTable("Audios", "Tiktok");
+                });
+
             modelBuilder.Entity("Tiktok.API.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -242,6 +274,48 @@ namespace Tiktok.API.Infrastructure.Persistence.Migrations
                     b.ToTable("Users", "Identity");
                 });
 
+            modelBuilder.Entity("Tiktok.API.Domain.Entities.Video", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ExternalAudioId")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTimeOffset?>("ModifiedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("MsDuration")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("ThumbnailUrl")
+                        .HasColumnType("varchar(512)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("varchar(1024)");
+
+                    b.Property<long>("TotalLove")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("varchar(512)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExternalAudioId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Videos", "Tiktok");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -291,6 +365,50 @@ namespace Tiktok.API.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Tiktok.API.Domain.Entities.Audio", b =>
+                {
+                    b.HasOne("Tiktok.API.Domain.Entities.Video", "Source")
+                        .WithOne("Audio")
+                        .HasForeignKey("Tiktok.API.Domain.Entities.Audio", "SourceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Source");
+                });
+
+            modelBuilder.Entity("Tiktok.API.Domain.Entities.Video", b =>
+                {
+                    b.HasOne("Tiktok.API.Domain.Entities.Audio", "ExternalAudio")
+                        .WithMany("UsageVideos")
+                        .HasForeignKey("ExternalAudioId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Tiktok.API.Domain.Entities.User", "Owner")
+                        .WithMany("Videos")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ExternalAudio");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Tiktok.API.Domain.Entities.Audio", b =>
+                {
+                    b.Navigation("UsageVideos");
+                });
+
+            modelBuilder.Entity("Tiktok.API.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Videos");
+                });
+
+            modelBuilder.Entity("Tiktok.API.Domain.Entities.Video", b =>
+                {
+                    b.Navigation("Audio");
                 });
 #pragma warning restore 612, 618
         }

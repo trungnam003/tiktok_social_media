@@ -9,7 +9,7 @@ public class LoginResultDto : IMapFrom<User>
     public string Username { get; set; }
     public string Email { get; set; }
     public string ImageUrl { get; set; }
-    
+
     public void Mapping(AutoMapper.Profile profile)
     {
         profile.CreateMap<User, LoginResultDto>().ReverseMap();

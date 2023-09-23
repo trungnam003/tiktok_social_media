@@ -3,6 +3,7 @@
 public static class SystemConstants
 {
     public const string IdentitySchema = "Identity";
+    public const string AppSchema = "Tiktok";
 
     public static class AppClaims
     {

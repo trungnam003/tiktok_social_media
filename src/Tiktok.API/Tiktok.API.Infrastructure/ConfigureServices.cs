@@ -1,15 +1,23 @@
 ﻿using System.Text;
+using Contracts.EventBusMessages.Events;
 using Contracts.Services;
 using Infrastructure.Configurations;
+using Infrastructure.Repositories.Interfaces;
+using Infrastructure.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
+using RabbitMQ.Client;
+using StackExchange.Redis;
 using Tiktok.API.Application.Common.Repositories;
 using Tiktok.API.Domain.Entities;
-using Tiktok.API.Domain.Repositories;
+using Tiktok.API.Domain.Services;
 using Tiktok.API.Infrastructure.Persistence;
 using Tiktok.API.Infrastructure.Repositories;
 using Tiktok.API.Infrastructure.Services;
@@ -22,10 +30,26 @@ public static class ConfigureServices
     {
         services.AddEntityFramework(configuration);
         services.AddIdentityServices(configuration);
+        services.AddMasstransitConfiguration(configuration);
+        services.AddRedis(configuration);
+        services.AddMongoDb(configuration);
 
         services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IVideoRepository, VideoRepository>();
+        services.AddScoped<IVideoTagRepository, VideoTagRepository>();
+
+
         services.AddScoped<IJwtService<User>, JwtService>();
+        services.AddScoped<IPublishMessageService, PublishMessageService>();
+        services.AddScoped<IOtpService, OtpService>();
+
+        var diskSettings = configuration.GetSection(nameof(DiskStorageSettings))
+            .Get<DiskStorageSettings>();
+        if (diskSettings == null)
+            throw new ArgumentNullException(nameof(diskSettings));
+        services.AddSingleton(diskSettings);
+        services.AddScoped<IFileService, FileService>();
     }
 
     private static void AddEntityFramework(this IServiceCollection services, IConfiguration configuration)
@@ -102,5 +126,61 @@ public static class ConfigureServices
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
                 };
             });
+    }
+
+    private static void AddMasstransitConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var settings = configuration.GetSection(nameof(EventBusSettings))
+            .Get<EventBusSettings>();
+
+        if (settings == null)
+            throw new ArgumentNullException(nameof(settings));
+        services.AddSingleton(settings);
+
+        var mqConnection = new Uri(settings.HostAddress);
+        services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+        services.AddMassTransit(config =>
+        {
+            config.UsingRabbitMq((ctx, cfg) =>
+            {
+                cfg.Host(mqConnection);
+
+                cfg.Message<SendMailForgotPasswordEvent>(x => { x.SetEntityName("send-email-forgot-password-event"); });
+
+                cfg.Publish<SendMailForgotPasswordEvent>(x => { x.ExchangeType = ExchangeType.Fanout; });
+
+                cfg.Message<UserUploadVideoEvent>(x => { x.SetEntityName("user-upload-video-event"); });
+
+                cfg.Publish<UserUploadVideoEvent>(x => { x.ExchangeType = ExchangeType.Fanout; });
+            });
+        });
+    }
+
+    private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisSettings = configuration.GetSection(nameof(RedisSettings))
+            .Get<RedisSettings>();
+        if (redisSettings == null && string.IsNullOrEmpty(redisSettings?.ConnectionString))
+            throw new ArgumentNullException(nameof(redisSettings));
+
+        services.AddSingleton<IConnectionMultiplexer>(x =>
+            ConnectionMultiplexer.Connect(redisSettings.ConnectionString));
+    }
+
+    private static void AddMongoDb(this IServiceCollection services, IConfiguration configuration)
+    {
+        var databaseSettings = configuration.GetSection(nameof(MongoDbDatabaseSettings))
+            .Get<MongoDbDatabaseSettings>();
+        if (databaseSettings == null)
+            throw new ArgumentNullException(nameof(databaseSettings));
+        services.AddSingleton(databaseSettings);
+        
+        services.AddSingleton<IMongoClient>(x =>
+            {
+                var connectionString = $"{databaseSettings.ConnectionString}/{databaseSettings.DatabaseName}?authSource=admin";
+                return new MongoClient(connectionString);
+            }
+            );
+        services.AddScoped(x => x.GetRequiredService<IMongoClient>().StartSession());
     }
 }

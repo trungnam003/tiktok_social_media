@@ -1,10 +1,9 @@
-﻿
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Contracts.Domains.Interfaces;
 
-namespace Tiktok.API.Domain.Repositories;
+namespace Contracts.Repositories;
 
-public interface IRepositoryQueryBase<T, in TK>
+public interface IRepositoryQueryBase<T, TK>
     where T : IEntityBase<TK>
 {
     IQueryable<T> FindAll(bool trackChanges = false);

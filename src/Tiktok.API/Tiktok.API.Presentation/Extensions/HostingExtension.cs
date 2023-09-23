@@ -34,8 +34,9 @@ public static class HostingExtension
         app.UseHttpsRedirection();
 
         app.UseMiddleware<ErrorWrapperMiddleware>();
-        app.UseRouting();
-        app.UseAuthorization();
+        app.UseAuthentication()
+            .UseRouting()
+            .UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {

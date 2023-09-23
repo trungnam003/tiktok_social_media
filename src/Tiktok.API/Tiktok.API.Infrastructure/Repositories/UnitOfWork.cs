@@ -1,16 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Tiktok.API.Domain.Repositories;
+using Tiktok.API.Infrastructure.Persistence;
 
 namespace Tiktok.API.Infrastructure.Repositories;
 
 public class UnitOfWork<TContext> : IUnitOfWork<TContext>
     where TContext : DbContext
 {
-    private readonly DbContext _context;
+    private readonly AppDbContext _context;
     private bool _disposed;
 
-    public UnitOfWork(DbContext context, IDbContextTransaction transaction)
+    public UnitOfWork(AppDbContext context)
     {
         _context = context;
         _disposed = false;

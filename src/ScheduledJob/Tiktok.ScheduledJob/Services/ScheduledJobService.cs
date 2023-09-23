@@ -6,43 +6,50 @@ namespace Tiktok.ScheduledJob.Services;
 
 public class ScheduledJobService : IScheduleService
 {
+    private readonly IBackgroundJobClient _backgroundJob;
+
+    public ScheduledJobService(IBackgroundJobClient backgroundJob)
+    {
+        _backgroundJob = backgroundJob;
+    }
+
     public string Enqueue(Expression<Action> functionCall)
     {
-        return BackgroundJob.Enqueue(functionCall);
+        return _backgroundJob.Enqueue(functionCall);
     }
 
     public string Enqueue<T>(Expression<Action<T>> functionCall)
     {
-        return BackgroundJob.Enqueue<T>(functionCall);
+        return _backgroundJob.Enqueue<T>(functionCall);
     }
 
     public string Schedule(Expression<Action> functionCall, TimeSpan delay)
     {
-        return BackgroundJob.Schedule(functionCall, delay);
+        return _backgroundJob.Schedule(functionCall, delay);
     }
 
     public string Schedule<T>(Expression<Action<T>> functionCall, TimeSpan delay)
     {
-        return BackgroundJob.Schedule<T>(functionCall, delay);
+        return _backgroundJob.Schedule<T>(functionCall, delay);
     }
 
     public string Schedule(Expression<Action> functionCall, DateTimeOffset enqueueAt)
     {
-        return BackgroundJob.Schedule(functionCall, enqueueAt);
+        return _backgroundJob.Schedule(functionCall, enqueueAt);
     }
 
     public string ContinueQueueWith(string parentJobId, Expression<Action> functionCall)
     {
-        return BackgroundJob .ContinueJobWith(parentJobId, functionCall);
+        return _backgroundJob.ContinueJobWith(parentJobId, functionCall);
     }
 
     public bool Delete(string jobId)
     {
-        return BackgroundJob.Delete(jobId);
+        return _backgroundJob.Delete(jobId);
     }
 
     public bool Requeue(string jobId)
     {
-        return BackgroundJob.Requeue(jobId);
+        return _backgroundJob.Requeue(jobId);
     }
 }

@@ -6,7 +6,6 @@ using Contracts.Services;
 using Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-
 using Tiktok.API.Domain.Entities;
 
 namespace Tiktok.API.Infrastructure.Services;
@@ -24,7 +23,7 @@ public class JwtService : IJwtService<User>
 
     public async Task<string> CreateToken(User user)
     {
-        if(user == null)
+        if (user == null)
             throw new ArgumentNullException(nameof(user));
 
         var userRoles = await _userManager.GetRolesAsync(user);
@@ -66,6 +65,4 @@ public class JwtService : IJwtService<User>
         var result = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         return result;
     }
-
-   
 }
