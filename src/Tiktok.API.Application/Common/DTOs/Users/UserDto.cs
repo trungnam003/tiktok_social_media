@@ -9,8 +9,6 @@ public class UserDto : IMapFrom<User>
     public string UserName { get; set; }
     public string FullName { get; set; }
     public string ImageUrl { get; set; }
-    public int FollowerCount { get; set; }
-    public int FollowingCount { get; set; }
     public string Id { get; set; }
     
     public void Mapping(Profile profile)

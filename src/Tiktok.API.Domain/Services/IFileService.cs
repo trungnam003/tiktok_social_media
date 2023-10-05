@@ -9,4 +9,5 @@ public interface IFileService
     Task<bool> CheckFileExistAsync(string fileName, string folderName);
     
     Task<string> GetFilePathAsync(string fileName, string folderName);
+    Task<bool> DeleteFileAsync(string fileName, string folderName);
 }

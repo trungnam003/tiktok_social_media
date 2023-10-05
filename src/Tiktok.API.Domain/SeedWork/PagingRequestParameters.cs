@@ -3,7 +3,7 @@
 public class PagingRequestParameters
 {
     protected const int MaxPageSize = 50;
-
+    
     protected int _pageNumber = 1;
 
     protected int _pageSize = 10;

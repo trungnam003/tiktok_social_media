@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Tiktok.API.Application.Common.DTOs.Users;
 using Tiktok.API.Domain.Common.Models;
-using Tiktok.API.Domain.Entities;
 using Tiktok.API.Domain.SeedWork;
 
 namespace Tiktok.API.Application.Features.Users.Queries.GetFollowersWithPaging;
@@ -27,6 +26,7 @@ public class GetFollowersQuery : PagingRequestParameters, IRequest<ApiSuccessRes
         }
     }
     // disable swagger
+    [FromQuery(Name = "orderBy")]
     public override string? OrderBy
     {
         get => _orderBy == 1 ? "asc" : "desc";

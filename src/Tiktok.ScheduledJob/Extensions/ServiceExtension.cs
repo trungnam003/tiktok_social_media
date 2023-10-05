@@ -1,16 +1,20 @@
 ﻿
 using MassTransit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RabbitMQ.Client;
-
+using StackExchange.Redis;
 using Tiktok.API.Application.Common.Repositories;
 using Tiktok.API.Domain.Configurations;
+using Tiktok.API.Domain.Entities;
+using Tiktok.API.Domain.EventBusMessages.Events;
 using Tiktok.API.Domain.Repositories;
 using Tiktok.API.Domain.SeedWork;
 using Tiktok.API.Domain.Services;
 using Tiktok.API.Infrastructure.Persistence;
 using Tiktok.API.Infrastructure.Repositories;
+using Tiktok.API.Infrastructure.Services;
 using Tiktok.ScheduledJob.Consumers;
 using Tiktok.ScheduledJob.Services;
 using Tiktok.ScheduledJob.Services.Interfaces;
@@ -21,7 +25,6 @@ public static class ServiceExtension
 {
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMasstransitConfiguration(configuration);
         var emailSettings = configuration.GetSection(nameof(EmailSettings))
             .Get<EmailSettings>();
         
@@ -32,16 +35,21 @@ public static class ServiceExtension
         services.AddSingleton<DiskStorageSettings>(storageSettings);
         
         services.AddEntityFramework(configuration);
+        services.AddMasstransitConfiguration(configuration);
+        services.AddRedis(configuration);
+        services.AddIdentity(configuration);
         
         services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
         services.AddScoped<IAudioRepository, AudioRepository>();
         services.AddScoped<IVideoRepository, VideoRepository>();
-
+        services.AddScoped<IUserRepository, UserRepository>();
+        
         services.AddScoped<IEmailService<MailRequest>, EmailService>();
         services.AddScoped<IEmailTemplateService, EmailTemplateService>();
         services.AddScoped<IScheduleService, ScheduledJobService>();
         services.AddScoped<IVideoUploadHandlerService, VideoUploadHandlerService>();
-        
+        services.AddScoped<ISerializeService, SerializeService>();
+
         
     }
     
@@ -100,6 +108,44 @@ public static class ServiceExtension
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseSqlServer(databaseSettings.ConnectionString);
+        });
+    }
+    
+    private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisSettings = configuration.GetSection(nameof(RedisSettings))
+            .Get<RedisSettings>();
+        if (redisSettings == null && string.IsNullOrEmpty(redisSettings?.ConnectionString))
+            throw new ArgumentNullException(nameof(redisSettings));
+
+        services.AddSingleton<IConnectionMultiplexer>(x =>
+            ConnectionMultiplexer.Connect(redisSettings.ConnectionString));
+    }
+    
+    private static void AddIdentity(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddIdentity<User, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.Configure<IdentityOptions>(options =>
+        {
+            // Password settings.
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequiredLength = 3;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+
+            // Lockout settings.
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
+
+            // User settings.
+            options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            options.User.RequireUniqueEmail = true;
         });
     }
 }

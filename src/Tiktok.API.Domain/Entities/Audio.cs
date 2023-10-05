@@ -16,9 +16,6 @@ public class Audio : EntityAuditableBase<string>
 
     [Column(TypeName = "varchar(255)")] 
     public string Url { get; set; }
-
-    [Column(TypeName = "bigint")] 
-    public long TotalUsed { get; set; }
     
     [Column(TypeName = "bigint")]
     public long MsDuration{ get; set; }

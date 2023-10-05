@@ -12,7 +12,7 @@ public abstract class MongoRepositoryBase<T> : IMongoRepositoryBase<T>
 {
     private readonly IMongoDatabase _database;
 
-    public MongoRepositoryBase(IMongoClient client, MongoDbDatabaseSettings databaseSettings)
+    protected MongoRepositoryBase(IMongoClient client, MongoDbDatabaseSettings databaseSettings)
     {
         _database = client.GetDatabase(databaseSettings.DatabaseName);
     }

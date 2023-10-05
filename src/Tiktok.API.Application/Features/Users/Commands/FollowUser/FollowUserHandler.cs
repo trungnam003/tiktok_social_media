@@ -3,14 +3,15 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Tiktok.API.Application.Common.Repositories;
 using Tiktok.API.Domain.Common.Models;
+using Tiktok.API.Domain.EventBusMessages.Events;
 using Tiktok.API.Domain.Exceptions;
+using Tiktok.API.Domain.Services;
 
 namespace Tiktok.API.Application.Features.Users.Commands.FollowUser;
 
 public class FollowUserHandler : IRequestHandler<FollowUserCommand, ApiSuccessResult<string>>
 {
     private readonly IUserRepository _userRepository;
-
     public FollowUserHandler(IUserRepository userRepository)
     {
         _userRepository = userRepository;
@@ -27,6 +28,7 @@ public class FollowUserHandler : IRequestHandler<FollowUserCommand, ApiSuccessRe
             throw new HttpException("User not found", StatusCodes.Status404NotFound);
 
         var result = await _userRepository.FollowUserAsync(checkFollowerExist, checkFollowingExist);
+        
         if (!result)
             throw new HttpException("Follow user failed");
 

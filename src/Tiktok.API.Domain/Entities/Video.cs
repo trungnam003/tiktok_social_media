@@ -18,9 +18,6 @@ public class Video : EntityAuditableBase<string>
 
     [Column(TypeName = "varchar(512)")] 
     public string Url { get; set; }
-
-    [Column(TypeName = "bigint")] 
-    public long TotalLove { get; set; }
     
     [NotMapped] 
     public User Owner { get; set; }

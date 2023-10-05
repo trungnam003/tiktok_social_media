@@ -173,9 +173,6 @@ namespace Tiktok.API.Infrastructure.Migrations
                     b.Property<string>("SourceId")
                         .HasColumnType("varchar(50)");
 
-                    b.Property<long>("TotalUsed")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Url")
                         .HasColumnType("varchar(255)");
 
@@ -212,16 +209,6 @@ namespace Tiktok.API.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<long>("FollowerCount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValue(0L);
-
-                    b.Property<long>("FollowingCount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValue(0L);
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -324,9 +311,6 @@ namespace Tiktok.API.Infrastructure.Migrations
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(1024)");
-
-                    b.Property<long>("TotalLove")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Url")
                         .HasColumnType("varchar(512)");
