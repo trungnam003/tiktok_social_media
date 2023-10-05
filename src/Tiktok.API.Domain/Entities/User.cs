@@ -12,8 +12,6 @@ public class User : IdentityUser, IEntityBase<string>
     public string FullName { get; set; }
     public string Bio { get; set; }
     public string ImageUrl { get; set; }
-    public long FollowerCount { get; set; }
-    public long FollowingCount { get; set; }
     [NotMapped] public virtual ICollection<Video> Videos { get; set; }
     [NotMapped] public virtual ICollection<Audio> Audios { get; set; }
 

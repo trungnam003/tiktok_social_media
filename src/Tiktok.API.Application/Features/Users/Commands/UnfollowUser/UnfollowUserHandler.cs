@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Tiktok.API.Application.Common.Repositories;
 using Tiktok.API.Domain.Common.Models;
+using Tiktok.API.Domain.EventBusMessages.Events;
 using Tiktok.API.Domain.Exceptions;
+using Tiktok.API.Domain.Services;
 
 namespace Tiktok.API.Application.Features.Users.Commands.UnfollowUser;
 
@@ -10,7 +12,6 @@ public class UnfollowUserHandler : IRequestHandler<UnfollowUserCommand, ApiSucce
 {
     
     private readonly IUserRepository _userRepository;
-
     public UnfollowUserHandler(IUserRepository userRepository)
     {
         _userRepository = userRepository;
@@ -30,6 +31,8 @@ public class UnfollowUserHandler : IRequestHandler<UnfollowUserCommand, ApiSucce
             throw new HttpException("User not follow", StatusCodes.Status406NotAcceptable);
 
         var result = await _userRepository.UnfollowUserAsync(checkFollowerExist, checkFollowingExist);
+        
+        
         if (!result)
             throw new HttpException("Unfollow user failed");
         

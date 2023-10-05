@@ -137,14 +137,6 @@ public static partial class ModelBuilderExtensions
 
         entity.Property(x => x.ImageUrl)
             .HasColumnType("varchar(1024)");
-
-        entity.Property(x => x.FollowerCount)
-            .HasColumnType("bigint")
-            .HasDefaultValue(0);
-
-        entity.Property(x => x.FollowingCount)
-            .HasColumnType("bigint")
-            .HasDefaultValue(0);
         
         // entity.HasMany<User>(x => x.Followers)
         //     .WithMany(x => x.Following)

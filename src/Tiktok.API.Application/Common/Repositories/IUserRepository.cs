@@ -24,4 +24,12 @@ public interface IUserRepository
     
     Task<IEnumerable<User>> GetFollowersWithPagingAsync(string followingId, int pageIndex, int pageSize);
 
+    Task<bool> IsFollowingAsync(string followerId, string followingId);
+    
+    Task<int> GetFollowingCountAsync(string followerId);
+    
+    Task<int> GetFollowersCountAsync(string followingId);
+    
+    Task<IEnumerable<User>> GetUsersInListAsync(IEnumerable<string> userIds, Expression<Func<User, User>> selector);
+    
 }

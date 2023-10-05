@@ -92,12 +92,14 @@ public abstract class RepositoryQueryCommand<T, TK, TContext> : Tiktok.API.Infra
          * dịch: Điều này có thể xảy ra khi mô hình đối tượng của bạn khác với cơ sở dữ liệu ngay cả bằng một thuộc tính.
          */
         _dbSet.Update(entity);
+        await SaveChangesAsync();
         return true;
     }
 
     public virtual async Task<bool> DeleteAsync(T entity)
     {
         _dbSet.Remove(entity);
+        await SaveChangesAsync();
         return true;
     }
 

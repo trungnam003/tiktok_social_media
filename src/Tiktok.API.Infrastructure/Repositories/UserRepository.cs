@@ -61,7 +61,7 @@ public class UserRepository : IUserRepository
 
     public Task<User> GetUserByUserNameAsync(string userName)
     {
-        throw new NotImplementedException();
+        return _userManager.FindByNameAsync(userName);
     }
 
     public async Task<User> LoginAsync(string email, string password)
@@ -101,14 +101,11 @@ public class UserRepository : IUserRepository
     {
         try
         {
-            var result = await _context.UserFollowers.AddAsync(new UserFollower
+             await _context.UserFollowers.AddAsync(new UserFollower
             {
                 FollowerId = followerUser.Id,
                 FollowingId = followingUser.Id
             });
-
-            followingUser.FollowerCount++;
-            followerUser.FollowingCount++;
             await _context.SaveChangesAsync();
             return true;
         }
@@ -127,9 +124,6 @@ public class UserRepository : IUserRepository
                 FollowerId = followerUser.Id,
                 FollowingId = followingUser.Id
             });
-
-            followingUser.FollowerCount--;
-            followerUser.FollowingCount--;
              await _context.SaveChangesAsync();
             return (true);
         }
@@ -162,8 +156,6 @@ public class UserRepository : IUserRepository
                 UserName = x.UserName,
                 FullName = x.FullName,
                 ImageUrl = x.ImageUrl,
-                FollowerCount = x.FollowerCount,
-                FollowingCount = x.FollowingCount,
                 Id = x.Id
             });
 
@@ -197,14 +189,37 @@ public class UserRepository : IUserRepository
                 UserName = x.UserName,
                 FullName = x.FullName,
                 ImageUrl = x.ImageUrl,
-                FollowerCount = x.FollowerCount,
-                FollowingCount = x.FollowingCount,
                 Id = x.Id
             })
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize);
         
         var result = await query.ToListAsync();
+        return result;
+    }
+
+    public Task<bool> IsFollowingAsync(string followerId, string followingId)
+    {
+        return _context.UserFollowers.AnyAsync(x =>
+            x.FollowerId.Equals(followerId) && x.FollowingId.Equals(followingId));
+    }
+
+    public Task<int> GetFollowingCountAsync(string followerId)
+    {
+        return _context.UserFollowers.Where(x => x.FollowerId.Equals(followerId)).CountAsync();
+    }
+
+    public Task<int> GetFollowersCountAsync(string followingId)
+    {
+        return _context.UserFollowers.Where(x => x.FollowingId.Equals(followingId)).CountAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetUsersInListAsync(IEnumerable<string> userIds,  Expression<Func<User, User>> selector)
+    {
+        var result = await _context.Users
+            .Where(x => userIds.Contains(x.Id))
+            .Select(selector)
+            .ToListAsync();
         return result;
     }
 }

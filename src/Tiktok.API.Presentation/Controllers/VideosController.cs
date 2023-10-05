@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tiktok.API.Application.Features.Videos.Commands.DeleteVideo;
 using Tiktok.API.Application.Features.Videos.Commands.UploadVideo;
 using Tiktok.API.Application.Features.Videos.Queries.GetVideoById;
 using Tiktok.API.Application.Features.Videos.Queries.StreamVideoById;
@@ -67,5 +68,15 @@ public class VideosController : ControllerBase
         };
         var result = await _mediator.Send(query);
         return Ok(result);
+    }
+    
+    [HttpDelete("{id}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteOwnedVideo([Required][FromRoute]DeleteVideoCommand command)
+    {
+        var userId = User.FindFirstValue(SystemConstants.AppClaims.Id);
+        command.SetOwner(userId);
+        await _mediator.Send(command);
+        return Ok();
     }
 }

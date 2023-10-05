@@ -35,14 +35,6 @@ public static class HostingExtension
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        // app.UseStaticFiles(new StaticFileOptions
-        // {
-        //     OnPrepareResponse = ctx =>
-        //     {
-        //         ctx.Context.Response.Headers.Add("Accept-Ranges", "bytes");
-        //     }
-        // });
         app.UseHttpsRedirection();
         
         app.UseMiddleware<ErrorWrapperMiddleware>();

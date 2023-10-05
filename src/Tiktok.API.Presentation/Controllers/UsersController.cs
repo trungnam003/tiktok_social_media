@@ -1,5 +1,7 @@
-﻿using System.Security.Claims;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -12,11 +14,13 @@ using Tiktok.API.Application.Features.Users.Commands.Register;
 using Tiktok.API.Application.Features.Users.Commands.UnfollowUser;
 using Tiktok.API.Application.Features.Users.Queries.GetFollowersWithPaging;
 using Tiktok.API.Application.Features.Users.Queries.GetFollowingWithPaging;
+using Tiktok.API.Application.Features.Users.Queries.GetUserProfile;
 using Tiktok.API.Application.Features.Users.Queries.Login;
 using Tiktok.API.Application.Features.Users.Queries.VerifyOtp;
 using Tiktok.API.Domain.Common.Constants;
 using Tiktok.API.Domain.Common.Models;
 using Tiktok.API.Domain.Entities;
+using Tiktok.API.Domain.SeedWork;
 
 
 namespace Tiktok.API.Presentation.Controllers;
@@ -108,17 +112,27 @@ public class UsersController : ControllerBase
         return this.Ok(new { message = "API is under development" });
     }
     
-    [HttpGet("profile")]
-    [Authorize]
-    public IActionResult GetMe()
+    [HttpGet("profile/{username}")]
+    [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status403Forbidden)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] 
+    [AllowAnonymous]
+    public async Task<IActionResult> GetProfileById([Required]string username)
     {
-        return this.Ok(new { message = "API is under development" });
-    }
-    
-    [HttpGet("profile/{id}")]
-    public IActionResult GetProfileById(string id)
-    {
-        return this.Ok(new { message = "API is under development" });
+        var query = new GetUserProfileQuery()
+        {
+            UserName = username
+        };
+        if (User.Identity is { IsAuthenticated: true })
+        {
+            var userNameClaim = User.FindFirstValue(SystemConstants.AppClaims.UserName);
+            var userIdClaim = User.FindFirstValue(SystemConstants.AppClaims.Id);
+            query.SetUserId(userIdClaim);
+            query.SetSelf((userNameClaim != null && userNameClaim.Equals(username)));
+        }
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
     
     [HttpPost("follow")]
@@ -126,6 +140,8 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status406NotAcceptable)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiSuccessResult<string>), StatusCodes.Status200OK)]
     [Authorize]
@@ -142,6 +158,8 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status406NotAcceptable)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiSuccessResult<string>), StatusCodes.Status200OK)]
     [Authorize]
@@ -173,7 +191,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiErrorResult), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiSuccessResult<IEnumerable<User>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedList<UserDto>), StatusCodes.Status200OK)]
     [Authorize]
     public async Task<IActionResult> GetFollowers([FromQuery] GetFollowersQuery query)
     {

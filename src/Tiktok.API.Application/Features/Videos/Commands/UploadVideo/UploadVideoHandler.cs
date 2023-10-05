@@ -66,7 +66,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, ApiSuccess
             Title = request.Title,
             OwnerId = user.Id,
             Url = url,
-            TotalLove = 0,
             Tags = tags
         };
         await _fileService.SaveVideoToStorageAsync(request.VideoUpload, fileName);

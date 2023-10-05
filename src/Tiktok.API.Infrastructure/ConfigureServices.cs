@@ -7,7 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Events;
 using RabbitMQ.Client;
 using StackExchange.Redis;
 using Tiktok.API.Application.Common.Repositories;
@@ -38,6 +40,7 @@ public static class ConfigureServices
         services.AddScoped<IVideoRepository, VideoRepository>();
         services.AddScoped<IVideoTagRepository, VideoTagRepository>();
         services.AddScoped<IAudioRepository, AudioRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
 
 
         services.AddScoped<IJwtService<User>, JwtService>();
@@ -146,13 +149,15 @@ public static class ConfigureServices
             {
                 cfg.Host(mqConnection);
 
-                cfg.Message<SendMailForgotPasswordEvent>(x => { x.SetEntityName("send-email-forgot-password-event"); });
+                cfg.Message<SendMailForgotPasswordEvent>(x 
+                    => { x.SetEntityName("send-email-forgot-password-event"); });
+                cfg.Publish<SendMailForgotPasswordEvent>(x 
+                    => { x.ExchangeType = ExchangeType.Fanout; });
 
-                cfg.Publish<SendMailForgotPasswordEvent>(x => { x.ExchangeType = ExchangeType.Fanout; });
-
-                cfg.Message<UserUploadVideoEvent>(x => { x.SetEntityName("user-upload-video-event"); });
-
-                cfg.Publish<UserUploadVideoEvent>(x => { x.ExchangeType = ExchangeType.Fanout; });
+                cfg.Message<UserUploadVideoEvent>(x 
+                    => { x.SetEntityName("user-upload-video-event"); });
+                cfg.Publish<UserUploadVideoEvent>(x 
+                    => { x.ExchangeType = ExchangeType.Fanout; });
             });
         });
     }
@@ -179,7 +184,9 @@ public static class ConfigureServices
         services.AddSingleton<IMongoClient>(x =>
             {
                 var connectionString = $"{databaseSettings.ConnectionString}/{databaseSettings.DatabaseName}?authSource=admin";
-                return new MongoClient(connectionString);
+                var mongoConnectionUrl = new MongoUrl(connectionString);
+                var mongoClientSettings = MongoClientSettings.FromUrl(mongoConnectionUrl);
+                return new MongoClient(mongoClientSettings);
             }
             );
         services.AddScoped(x => x.GetRequiredService<IMongoClient>().StartSession());

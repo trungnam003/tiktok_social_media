@@ -51,4 +51,15 @@ public class FileService : IFileService
 
         return Task.FromResult(Path.Combine(folderPath, fileName));
     }
+
+    public async Task<bool> DeleteFileAsync(string fileName, string folderName)
+    {
+        var check = await CheckFileExistAsync(fileName, folderName);
+        if (!check) return false;
+        var storagePath = _diskStorageSettings.StoragePath.TrimEnd('\\').TrimEnd('/');
+        var folderPath = Path.Combine(storagePath, folderName);
+        var filePath = Path.Combine(folderPath, fileName);
+        System.IO.File.Delete(filePath);
+        return true;
+    }
 }
