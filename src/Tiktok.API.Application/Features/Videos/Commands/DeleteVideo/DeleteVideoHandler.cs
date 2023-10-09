@@ -11,11 +11,13 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, bool>
 {
     private readonly IVideoRepository _videoRepository;
     private readonly IFileService _fileService;
+    private readonly ICommentRepository _commentRepository;
 
-    public DeleteVideoHandler(IVideoRepository videoRepository, IFileService fileService)
+    public DeleteVideoHandler(IVideoRepository videoRepository, IFileService fileService, ICommentRepository commentRepository)
     {
         _videoRepository = videoRepository;
         _fileService = fileService;
+        _commentRepository = commentRepository;
     }
 
 
@@ -35,7 +37,8 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, bool>
         var thumbnailFileName = $"{video.Id}.png";
 
         await Task.WhenAll(_fileService.DeleteFileAsync(videoFileName, DiskStorageSettings.Video),
-            _fileService.DeleteFileAsync(thumbnailFileName, DiskStorageSettings.Thumbnail));
+            _fileService.DeleteFileAsync(thumbnailFileName, DiskStorageSettings.Thumbnail),
+            _commentRepository.DeleteCommentAsync(video.Id));
         
         return await _videoRepository.DeleteAsync(video);
     }

@@ -14,4 +14,9 @@ public interface ICommentRepository: IMongoRepositoryBase<Comment>
     public Task<IEnumerable<Comment>> GetChildCommentsByRootCommentIdAsync(string rootCommentId, string videoId, int pageIndex, int pageSize);
     
     public Task<long> CountChildCommentsByRootCommentIdAsync(string rootCommentId, string videoId);
+    
+    public Task<bool> DeleteCommentAsync(string commentId, string userId);
+    
+    public Task DeleteCommentAsync(string videoId);
+
 }
