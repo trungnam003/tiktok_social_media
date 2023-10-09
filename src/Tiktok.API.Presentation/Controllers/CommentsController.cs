@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tiktok.API.Application.Features.Comments.Commands.AddCommentToVideo;
+using Tiktok.API.Application.Features.Comments.Commands.DeleteVideoComment;
 using Tiktok.API.Application.Features.Comments.Queries.GetChildCommentOfRoot;
 using Tiktok.API.Application.Features.Comments.Queries.GetRootVideoComment;
 using Tiktok.API.Domain.Common.Constants;
@@ -44,6 +45,20 @@ public class CommentsController : ControllerBase
         query.SetVideoId(videoId);
         query.SetCommentId(commentId);
         var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+    
+    [HttpDelete("{commentId}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteComment([FromRoute] string commentId)
+    {
+        var userId = User.FindFirstValue(SystemConstants.AppClaims.Id);
+        var command = new DeleteVideoCommentCommand()
+        {
+            CommentId = commentId,
+            UserId = userId
+        };
+        var result = await _mediator.Send(command);
         return Ok(result);
     }
 }

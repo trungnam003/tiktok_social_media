@@ -83,4 +83,31 @@ public class CommentRepository : MongoRepositoryBase<Comment> , ICommentReposito
                      & Builders<Comment>.Filter.Eq(x => x.VideoId, videoId);
         return Collection.CountDocumentsAsync(filter);
     }
+
+    public async Task<bool> DeleteCommentAsync(string commentId, string userId)
+    {
+        var filter = Builders<Comment>.Filter.Eq(x => x.Id, commentId);
+        
+        var findResult = await Collection.FindAsync(filter);
+        var comment = findResult.FirstOrDefault();
+        if (comment == null || !comment.UserId.Equals(userId))
+        {
+            return false;
+        }
+        if (comment.HasChild)
+        {
+            // delete all child comments
+            var deleteChildFilter = Builders<Comment>.Filter.Eq(x => x.RootId, comment.Id);
+            await Collection.DeleteManyAsync(deleteChildFilter);
+        }
+        // delete comment
+        await Collection.DeleteOneAsync(filter);
+        return true;
+    }
+
+    public async Task DeleteCommentAsync(string videoId)
+    {
+        var filter = Builders<Comment>.Filter.Eq(x => x.VideoId, videoId);
+        await Collection.DeleteManyAsync(filter);
+    }
 }
